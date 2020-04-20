@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	
+</body>
+
+<script>
+	// 封装栈类
+	function Stack() {
+		this.items = [];
+
+		// 栈的相关操作
+		// 1.压栈
+		Stack.prototype.push = function(element) {
+			this.items.push(element)
+		}
+
+		// 2.出栈
+		Stack.prototype.pop = function() {
+			return this.items.pop()
+		}
+		
+		// 3.查看栈顶元素
+		Stack.prototype.peek = function() {
+			return this.items[this.items.length - 1]
+		}
+
+		// 4.判断栈是否为空
+		Stack.prototype.isEmpty = function() {
+			return this.items.length == 0
+		}
+		
+		// 5.获取栈中元素个数
+		Stack.prototype.size = function() {
+			return this.items.length
+		}
+		// 6.toString()
+		Stack.prototype.toString = function () {
+			let resultString = ''
+			for (let i = 0; i< this.items.length; i++) {
+				resultString += this.items[i] + ' '
+			}
+			return resultString
+		}
+	}
+
+	// 函数：将十进制转成二进制
+	function dec2bin(decNumber) {
+		// 1.定义栈对象
+		let stack = new Stack()
+
+		while (decNumber > 0) {
+			stack.push(decNumber % 2)
+			decNumber = Math.floor(decNumber / 2)
+		}
+
+		let binaryString = ''
+		while (!stack.isEmpty()) {
+			binaryString += stack.pop()
+		}
+		return binaryString
+	}
+
+	alert(dec2bin(2000))
+
+</script>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+</body>
+<script>
+	// 冒泡排序：相邻数据两两比较，大的冒泡
+	function bubbleSort(arr) {
+		let len = arr.length
+		for (let count = 1; count < len; count++) {
+			for (let i = 0; i < len - count; i++) {
+				let j = i + 1
+				if (arr[j] < arr[i]) {
+					let temp = arr[i]
+					arr[i] = arr[j]
+					arr[j] = temp
+				}
+			}
+		}
+	}
+
+	// 选择排序：每次循环找出最小的，交换位置
+	function selectionSort(arr) {
+		let len = arr.length
+		for (let i = 0; i < len - 1; i++) {
+			let min = i
+			for (let j = i + 1; j < len; j++) {
+				if (arr[j] < arr[min]) {
+					min = j
+				}
+			}
+			if (min !== i) {
+				let temp = arr[i]
+				arr[i] = arr[min]
+				arr[min] = temp
+			}
+		}
+	}
+
+	// 插入排序：双指针扫描，局部有序，最大的往前移
+	function insertionSort(arr) {
+		let len = arr.length
+		for (let key = 1; key < len; key++) {
+			let i = key - 1
+			let j = key
+			while (i >= 0) {
+				if (arr[i] > arr[j]) {
+					let temp = arr[i]
+					arr[i] = arr[j]
+					arr[j] = temp
+					j = i
+				}
+				i--
+			}
+		}
+	}
+
+	// 快速排序
+	// 分区
+	function quickSort(arr, p, q) {
+	  if (p < q) {
+	    let i = partition(arr, p, q)
+	    quickSort(arr, p, i - 1)
+	    quickSort(arr, i + 1, q)
+	  }
+	}
+
+	function partition(arr, p, q) {
+	  let pivot = arr[p]
+	  let i = p
+	  for (let j = i +1; j <= q; j++) {
+	    if (arr[j] < pivot) {
+	      i++
+	      let temp = arr[i]
+	      arr[i] = arr[j]
+	      arr[j] = temp
+	    }
+	  }
+	  let temp = arr[i]
+	  arr[i] = arr[p]
+	  arr[p] = temp
+	  return i
+	}
+
+
+	let arr = [5,432,123,433,543,6634,21,2,0]
+
+	quickSort(arr, 0, arr.length - 1)
+
+	console.log(arr)
+
+</script>
+</html>

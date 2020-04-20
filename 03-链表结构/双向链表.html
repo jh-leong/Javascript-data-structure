@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+</body>
+<script>
+	// 封装双向链表类
+	function DoublyLinkedList() {
+		// 内部的类：节点类
+		function Node(data) {
+			this.data = data
+			this.next = null
+			this.prev = null
+		}
+
+		// 属性
+		this.head = null 
+		this.tail = null
+		this.length = 0
+
+		// 1.追加方法
+		DoublyLinkedList.prototype.append = function (data) {
+			// 1.创建新的节点
+			let newNode = new Node(data)
+
+			// 2.判断新结点是否为第一个节点
+			if (this.length ==0) {
+				this.head = newNode
+				this.tail = newNode
+			} else {
+				newNode.prev = this.tail
+				this.tail.next = newNode
+				this.tail = newNode
+			}
+			this.length++
+		}
+
+		// 2.toString方法
+		DoublyLinkedList.prototype.toString = function () {
+			return this.backwardString()
+		}
+
+		DoublyLinkedList.prototype.forwardString = function () {
+			let current = this.tail
+			let resultString = ''
+			while (current) {
+				resultString += current.data + ' '
+				current = current.prev
+			}
+			return resultString
+		}
+
+		DoublyLinkedList.prototype.backwardString = function () {
+			let current = this.head
+			let resultString = ''
+			while (current) {
+				resultString += current.data + ' '
+				current = current.next
+			}
+			return resultString
+		}
+
+		// 3.insert方法
+		DoublyLinkedList.prototype.insert = function (position, data) {
+			// 1.对position进行越界判断
+			if (position < 0 || position > this.length) return false;
+
+			if (this.length == 0)  return this.append(data)
+
+			let newNode = new Node(data)
+			if (position == 0) {
+				this.head.prev = newNode
+				newNode.next = this.head
+				this.head = newNode
+				newNode.prev = this.head
+			} else if (position == this.length) {
+				newNode.prev = this.tail
+				this.tail.next = newNode
+				this.tail = newNode
+			} else {
+				let current = this.head
+				let index = 0
+				while (index++ < position - 1) {
+					current = current.next
+				}
+				let newNodeNext = current.next
+				newNode.prev = current
+				current.next = newNode
+				newNode.next = newNodeNext
+				newNodeNext.prev = newNode
+			}
+
+			this.length++
+			return true
+		}
+
+		// 4.get方法
+		DoublyLinkedList.prototype.get = function (position) {
+			if (position < 0 || position >= this.length) return false
+			let current = this.head
+			let index = 0
+			while (index++ < position) {
+				current = current.next
+			}
+			return current.data
+		}
+
+		// 5.indexOf方法
+		DoublyLinkedList.prototype.indexOf = function (data) {
+			let index = 0
+			let current = this.head
+			while (current) {
+				if (current.data === data) return index;
+				index++
+				current = current.next
+			}
+			return -1
+		}
+
+		// 6.updata
+		DoublyLinkedList.prototype.updata = function (position, newData) {
+			if (position < 0 || position >= this.length) return false
+			let current = this.head
+			let index = 0
+			while (index++ < position) {
+				current = current.next
+			}
+			current.data = newData
+			return true
+		}
+
+		// 7.removeAt
+		DoublyLinkedList.prototype.removeAt = function (position) {
+			if (position < 0 || position >= this.length || this.length == 0) return false
+
+			let current = this.head
+			let removeData
+
+			if (this.length == 1) {
+				this.head = null 
+				this.tail = null
+			} else {
+				if (position == 0) {
+					removeData = this.head.data
+					this.head = this.head.next
+				} else if (position == this.length) {
+					removeData = this.tail.data
+					this.tail.prev.next = null
+					this.tail = this.tail.prev
+				}else {
+					let index = 0
+					while (index++ < position) {
+						current = current.next
+					}
+					removeData = current.next.data
+					current.prev.next = current.next
+					current.next.prev = current.prev
+				}
+			}
+			this.length--
+			return removeData
+		}
+
+		// 8.remove
+		DoublyLinkedList.prototype.remove = function (data) {
+			let position = this.indexOf(data)
+			return this.removeAt(position)
+		}
+
+		// 9.isEmpty
+		DoublyLinkedList.prototype.isEmpty = function () {
+			return this.length == 0
+		}
+
+		// 10.size
+		DoublyLinkedList.prototype.size = function () {
+			return this.length
+		}
+
+	}
+
+	// 测试代码
+	let list = new DoublyLinkedList()
+	list.append('a')
+	list.append('aa')
+	list.append('aaa')
+	list.insert(3, 'bb')
+
+	// list.updata(0, 'b')
+
+	// alert一个函数的时候会接受函数toString方法的返回值
+	// alert(list.forwardString())
+	console.log(list)
+
+</script>
+</html>

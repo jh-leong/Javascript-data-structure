@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+<script>
+	function BinarySerachTree () {
+		
+		function Node (key) {
+			this.key = key 
+			this.left = null
+			this.right = null
+		}
+
+		this.root = null
+
+		// 方法
+		BinarySerachTree.prototype.insert = function (key) {
+			let newNode = new Node(key)
+			if (this.root === null) {
+				this.root = newNode
+			} else {
+				this.insertNode(this.root, newNode)
+			}
+		}
+
+		BinarySerachTree.prototype.insertNode = function (node, newNode) {
+			if (newNode.key < node.key) {
+				if (node.left === null) {
+					node.left = newNode
+				} else {
+					this.insertNode(node.left, newNode)
+				}
+			} else {
+				if (node.right === null) {
+					node.right = newNode
+				} else {
+					this.insertNode(node.right, newNode)
+				}
+			}
+		}
+
+		// 遍历
+		// 中序遍历
+		BinarySerachTree.prototype.midOrderTraverse = function () {
+			let result = ''
+			function handle (key) {
+				result += key + ' '
+			}
+			this.midOrderTraverseNode(this.root, handle)
+			return result
+		}
+
+		BinarySerachTree.prototype.midOrderTraverseNode = function (node, handle) {
+			if (node != null) {
+				this.midOrderTraverseNode(node.left, handle)
+				handle(node.key)
+				this.midOrderTraverseNode(node.right, handle)
+			}
+		}
+
+		// 先序遍历
+		BinarySerachTree.prototype.preOrderTraverse = function () {
+			let result = ''
+			function handle (key) {
+				result += key +' '
+			}
+			this.preOrderTraverseNode(this.root, handle)
+			return result
+		}
+
+		BinarySerachTree.prototype.preOrderTraverseNode = function (node, handle) {
+			if (node != null) {
+				handle(node.key)
+				this.preOrderTraverseNode(node.left, handle)
+				this.preOrderTraverseNode(node.right, handle)
+			}
+		}
+
+		// 后序遍历
+		BinarySerachTree.prototype.postOrderTraverse = function () {
+			let result = ''
+			function handle (key) {
+				result += key +' '
+			}
+			this.postOrderTraverseNode(this.root, handle)
+			return result
+		}
+
+		BinarySerachTree.prototype.postOrderTraverseNode = function (node, handle) {
+			if (node != null) {
+				this.postOrderTraverseNode(node.left, handle)
+				this.postOrderTraverseNode(node.right, handle)
+				handle(node.key)
+			}
+		}
+
+		BinarySerachTree.prototype.max = function () {
+			let node = this.root
+			while (node.right != null) node = node.right
+			return node.key
+		}
+
+		BinarySerachTree.prototype.min = function () {
+			let node = this.root
+			while (node.left != null) node = node.left
+			return node.key
+		}
+
+		BinarySerachTree.prototype.search = function (num) {
+			let node = this.root
+			while (node != null) {
+				if (num > node.key) {
+					node = node.right
+				} else if (num < node.key) {
+					node = node.left
+				} else {
+					return true
+				}
+			}
+			return false
+		}
+
+		BinarySerachTree.prototype.remove = function (key) {
+			// 1. 找到要删除的节点
+			let current = this.root
+			let parent = null
+			let isLeftChild = true
+			while (current.key !== key) {
+				parent = current
+				if (current.key < key) {
+					isLeftChild = false
+					current = current.right
+				} else {
+					isLeftChild = true
+					current = current.left
+				}
+			}
+			// 1.1 节点不存在
+			if (current === null) return false
+
+			// 2. 该节点没有子节点
+			if (current.left === null && current.right === null) {
+				// 2.1 该节点为根节点
+				if (current === this.root) {
+					this.root = null
+				} else if (isLeftChild) {
+					parent.left = null
+				} else {
+					parent.right = null
+				}
+				return true
+			}
+
+			// 3. 该节点只有一个子节点
+			if (current.left === null || current.right === null) {
+				if (current.left === null) {
+					// 3.1 该节点是根节点
+					if (current === this.root) {
+						this.root = current.right
+					} else if (isLeftChild) {
+						parent.left = current.right
+					} else {
+						parent.right = current.right
+					}
+				} else {
+					// 3.1 该节点是根节点
+					if (current === this.root) {
+						this.root = current.right
+					} else if (isLeftChild) {
+						parent.left = current.left
+					} else {
+						parent.right = current.left
+					}
+				}
+				return true
+			}
+
+			// 4. 该节点有两个子节点
+			// 4.1 寻找后继：右节点中的最小值
+			let min = current.right
+			let minParent = current
+			while (min.left !== null) {
+				minParent = min
+				min = min.left
+			}
+			// 4.2 该节点是根节点
+			if (current === this.root) {
+				min.left = current.left
+				this.root = min
+				return true
+			}
+			// 4.3 后继替换current
+			// 4.3.1 后继不是curent的右节点
+			if (current.right !== min) {
+				// 4.3.1.1 判断后继有无右节点
+				if (min.right !== null) {
+					minParent.left = min.right
+				} else {
+					minParent.left = null
+				}
+				min.left = current.left
+				min.right = current.right
+			} 
+			// 4.3.2 后继是curent的右节点
+			else {
+				min.left = current.left
+			}
+			// 4.4 链接current的父节点
+			if (isLeftChild) {
+				parent.left = min
+			} else {
+				parent.right = min
+			}
+			return true
+		}
+	}
+
+	// text 
+	let bst = new BinarySerachTree()
+
+	bst.insert(11)
+	bst.insert(7)
+	bst.insert(15)
+	bst.insert(5)
+	bst.insert(3)
+	bst.insert(9)
+	bst.insert(8)
+	bst.insert(10)
+	bst.insert(13)
+	bst.insert(12)
+	bst.insert(14)
+	bst.insert(20)
+	bst.insert(18)
+	bst.insert(25)
+	bst.insert(6)
+
+	// console.log(bst.preOrderTraverse())
+
+	// console.log(bst.midOrderTraverse())
+
+	// console.log(bst.postOrderTraverse())
+
+	// console.log(bst.min())
+	// console.log(bst.max())
+
+	// console.log(bst.search(188))
+	bst.remove(9)
+	bst.remove(7)
+	bst.remove(15)
+	console.log(bst.postOrderTraverse())
+
+
+</script>
+</body>
+</html>
